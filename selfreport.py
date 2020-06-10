@@ -2,6 +2,7 @@
 # coding=UTF-8
 from selenium import webdriver
 import time
+import random
 
 
 class SelfReport(object):
@@ -11,7 +12,7 @@ class SelfReport(object):
         self.driver = webdriver.Chrome()
 
     def auto_report(self):
-        file_handle = open('log.txt', mode='a')
+        file_handle = open('log.txt', mode='a',encoding='utf-8')
         driver = self.driver
         driver.get('https://selfreport.shu.edu.cn/Default.aspx')
         print("="*100)
@@ -33,19 +34,26 @@ class SelfReport(object):
         promise = driver.find_element_by_id("p1_ChengNuo-inputEl-icon")
         promise.click()
         temperature = driver.find_element_by_id("p1_TiWen-inputEl")
-        temperature.send_keys("36")
+        store = ["36.8","36.9","37","37.1","37.2"]
+        i = random.randint(0,4)
+        choose = store[i]
+        temperature.send_keys(choose)
         print("填报体温完成")
         print("勾选承诺完成")
         time.sleep(1)
         submit_res = driver.find_element_by_id("p1_ctl00_btnSubmit")
         submit_res.click()
-        driver.find_element_by_id("fineui_66").click()
+        time.sleep(1)
+        driver.find_elements_by_css_selector(".f-btn.f-noselect.f-state-default.f-corner-all"
+                                                    ".f-btn-normal.f-btn-icon-no.f-cmp.f-widget"
+                                                    ".f-toolbar-item")[3].click()
+        # driver.find_element_by_id("fineui_37").click()
         print(time.ctime())
-        time.sleep(5)
+        time.sleep(1)
         driver.close()
         print("每日一报已完成")
         print("="*100)
-        file_handle.write('体温为36度\n')
+        file_handle.write('体温为'+choose+'度\n')
         file_handle.write('已完成每日一报自动填写\n')
         file_handle.write('='*100)
         file_handle.write('\n')
